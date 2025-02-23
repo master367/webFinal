@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      background-color: white;
+      border-radius: 10px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    input, textarea, button {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    #blog-list div {
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    }
+    .buttons {
+      display: flex;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    .buttons button {
+      background-color: #dc3545;
+    }
+    .buttons button.edit {
+      background-color: #ffc107;
+    }
+  </style>
+
+</head>
+<body>
+<h1>Blog</h1>
+<form onsubmit="document.getElementById('blog-id').value ? updateBlog(event) : addBlog(event)">
+  <input type="hidden" id="blog-id">
+  <input type="text" id="title" placeholder="Title" required>
+  <textarea id="body" placeholder="Body" required></textarea>
+  <input type="text" id="author" placeholder="Author" required>
+  <button type="submit">Save</button>
+</form>
+<div id="blog-list"></div>
+
+<script>
+  async function fetchBlogs() {
+    const response = await fetch('/blogs');
+    const blogs = await response.json();
+    const blogList = document.getElementById('blog-list');
+    blogList.innerHTML = '';
+    blogs.forEach(blog => {
+      const div = document.createElement('div');
+      div.innerHTML = `<h3>${blog.title}</h3><p>${blog.body}</p><small>Author: ${blog.author}</small>
+                <div class='buttons'>
+                    <button class='edit' onclick="editBlog('${blog._id}', '${blog.title}', '${blog.body}', '${blog.author}')">Edit</button>
+                    <button onclick="deleteBlog('${blog._id}')">Delete</button>
+                </div>`;
+      blogList.appendChild(div);
+    });
+  }
+
+  async function addBlog(event) {
+    event.preventDefault();
+    const title = document.getElementById('title').value;
+    const body = document.getElementById('body').value;
+    const author = document.getElementById('author').value;
+
+    const response = await fetch('/blogs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, body, author })
+    });
+
+    if (response.ok) {
+      fetchBlogs();
+    }
+  }
+
+  async function deleteBlog(id) {
+    await fetch(`/blogs/${id}`, { method: 'DELETE' });
+    fetchBlogs();
+  }
+
+  function editBlog(id, title, body, author) {
+    document.getElementById('title').value = title;
+    document.getElementById('body').value = body;
+    document.getElementById('author').value = author;
+    document.getElementById('blog-id').value = id;
+  }
+
+  async function updateBlog(event) {
+    event.preventDefault();
+    const id = document.getElementById('blog-id').value;
+    const title = document.getElementById('title').value;
+    const body = document.getElementById('body').value;
+    const author = document.getElementById('author').value;
+
+    await fetch(`/blogs/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, body, author })
+    });
+
+    fetchBlogs();
+  }
+
+  window.onload = fetchBlogs;
+</script>
+
+</body>
+</html>
