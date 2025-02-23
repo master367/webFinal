@@ -6,7 +6,157 @@
     <title>Weather and Photos</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+
+        form {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 30px;
+            max-width: 600px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        input {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 300px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            background-color: #e87d51;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #d85324;
+        }
+
+
+        #error {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+
+        #weather {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 20px;
+            text-align: center;
+        }
+
+        #weather h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        #weather p {
+            font-size: 16px;
+            color: #555;
+            margin: 10px 0;
+        }
+
+        #weather img {
+            margin-top: 15px;
+            width: 70px;
+            height: 70px;
+        }
+
+
+        #photos {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        #photos img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            input {
+                margin-bottom: 10px;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            #weather {
+                width: 90%;
+            }
+        }
+
+        #map {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+        }
+
+    </style>
 </head>
 <body>
 
@@ -20,6 +170,84 @@
 <div id="map"></div>
 <div id="photos"></div>
 
-<script src="script.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('form');
+        const cityInput = document.querySelector('#city');
+        const weatherContainer = document.querySelector('#weather');
+        const photosContainer = document.querySelector('#photos');
+        const errorMessage = document.querySelector('#error');
+
+
+        let map;
+
+        const initMap = (lat, lon) => {
+            if (map) {
+                map.setView([lat, lon], 10);
+            } else {
+                map = L.map('map').setView([lat, lon], 10);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© Adilbek maps'
+                }).addTo(map);
+                L.marker([lat, lon]).addTo(map).bindPopup('Location').openPopup();
+            }
+        };
+
+        const updateWeatherAndPhotos = async (city) => {
+            try {
+                const weatherResponse = await fetch(`/Project3/weather?city=${city}`);
+                const weatherData = await weatherResponse.json();
+
+                if (weatherData.error) {
+                    errorMessage.textContent = weatherData.error;
+                    weatherContainer.innerHTML = '';
+                    photosContainer.innerHTML = '';
+                    return;
+                }
+
+                errorMessage.textContent = '';
+                weatherContainer.innerHTML = '';
+                photosContainer.innerHTML = '';
+
+                weatherContainer.innerHTML = `
+        <h2>${weatherData.city}, ${weatherData.countryCode}</h2>
+        <p><strong>Temperature:</strong> ${weatherData.temperature}°C</p>
+        <p><strong>Feels like:</strong> ${weatherData.feelsLike}°C</p>
+        <p><strong>Humidity:</strong> ${weatherData.humidity}%</p>
+        <p><strong>Pressure:</strong> ${weatherData.pressure} hPa</p>
+        <p><strong>Wind Speed:</strong> ${weatherData.windSpeed} m/s</p>
+        <p><strong>Description:</strong> ${weatherData.description}</p>
+        <img src="http://openweathermap.org/img/wn/${weatherData.icon}@2x.png" alt="Weather icon">
+      `;
+
+                if (weatherData.photos && weatherData.photos.length > 0) {
+                    const photosData = weatherData.photos.map(photo => {
+                        return `<img src="${photo}" alt="Photo">`;
+                    }).join('');
+                    photosContainer.innerHTML = photosData;
+                } else {
+                    photosContainer.innerHTML = '<p>No photos found.</p>';
+                }
+
+                initMap(weatherData.coordinates.lat, weatherData.coordinates.lon);
+
+            } catch (error) {
+                errorMessage.textContent = 'Error loading data.';
+                console.error('Error:', error);
+            }
+        };
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const city = cityInput.value.trim();
+            if (city) {
+                updateWeatherAndPhotos(city);
+            } else {
+                errorMessage.textContent = 'Please enter a city.';
+            }
+        });
+    });
+
+</script>
 </body>
 </html>

@@ -74,7 +74,7 @@
 
 <script>
   async function fetchBlogs() {
-    const response = await fetch('/blogs');
+    const response = await fetch('/Project4/blogs');
     const blogs = await response.json();
     const blogList = document.getElementById('blog-list');
     blogList.innerHTML = '';
@@ -95,7 +95,7 @@
     const body = document.getElementById('body').value;
     const author = document.getElementById('author').value;
 
-    const response = await fetch('/blogs', {
+    const response = await fetch('/Project4/blogs', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, body, author })
@@ -107,7 +107,7 @@
   }
 
   async function deleteBlog(id) {
-    await fetch(`/blogs/${id}`, { method: 'DELETE' });
+    await fetch(`/Project4/blogs/${id}`, { method: 'DELETE' });
     fetchBlogs();
   }
 
@@ -125,7 +125,7 @@
     const body = document.getElementById('body').value;
     const author = document.getElementById('author').value;
 
-    await fetch(`/blogs/${id}`, {
+    await fetch(`/Project4/blogs/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, body, author })

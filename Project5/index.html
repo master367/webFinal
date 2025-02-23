@@ -2,9 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: inline-block;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 15px;
+    }
+    input {
+      padding: 10px;
+      width: 80%;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #555;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-$END$
+<div class="container">
+  <h1>Enter text for QR Code</h1>
+  <input type="text" id="qrInput" placeholder="Enter URL or text">
+  <button onclick="generateQR()">Generate QR Code</button>
+  <div id="qrContainer" style="margin-top: 15px;"></div>
+</div>
+<script>
+  function generateQR() {
+    const input = document.getElementById('qrInput').value;
+    if (input.trim() === '') return;
+    document.getElementById('qrContainer').innerHTML = `<img src="/Project5/qr?text=${encodeURIComponent(input)}" alt="QR Code">`;
+  }
+</script>
 </body>
 </html>

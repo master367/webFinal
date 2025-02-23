@@ -115,11 +115,12 @@
 
     const result = await response.json();
     if (result.success) {
-      window.location.href = '../public/index.html';
+      window.location.href = result.redirect;  // Редирект согласно данным сервера
     } else {
       alert(result.message);
     }
   });
+
 
 </script>
 </body>
