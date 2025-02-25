@@ -11,7 +11,6 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// Разрешаем CORS и передачу cookie
 app.use(
     cors({
         origin: "http://localhost:3000",
