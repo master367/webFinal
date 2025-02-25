@@ -14,7 +14,19 @@
     <li><a href="/Project3">Проект 3</a></li>
     <li><a href="/Project4">Проект 4</a></li>
     <li><a href="/Project5">Проект 5</a></li>
-    <li><a href="/Project6">Проект 5</a></li>
+    <li><a href="/Project6">Проект 6</a></li>
+    <button id="logout">Выйти</button>
 </ul>
+
+<script>
+    document.getElementById("logout").addEventListener("click", () => {
+        fetch("http://localhost:3006/logout", {
+            method: "POST",
+            credentials: "include",
+        }).then(() => {
+            window.location.href = "http://localhost:3006"; // Перенаправление на логин
+        });
+    });
+</script>
 </body>
 </html>
