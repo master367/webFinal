@@ -44,10 +44,10 @@ app.post("/register", async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         await new User({ username, password: hashedPassword }).save();
-        res.json({ message: "Регистрация успешна" });
+        res.json({ message: "Registration is successful" });
     } catch (e) {
-        if (e.code === 11000) res.status(400).json({ message: "Пользователь уже существует" });
-        else res.status(400).json({ message: "Ошибка регистрации" });
+        if (e.code === 11000) res.status(400).json({ message: "The user already exists" });
+        else res.status(400).json({ message: "Registration error" });
     }
 });
 
@@ -55,27 +55,24 @@ app.post("/login", async (req, res) => {
     const user = await User.findOne({ username: req.body.username });
 
     if (user && (await bcrypt.compare(req.body.password, user.password))) {
-        // Генерация токена
         const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, {
             expiresIn: "1h",
         });
 
-        // Устанавливаем cookie с токеном
         res.cookie("token", token, {
-            httpOnly: true, // Доступно только серверу
-            secure: false, // Поменяй на true, если используешь HTTPS
+            httpOnly: true,
+            secure: false,
             sameSite: "strict",
         });
 
         res.json({ success: true, redirect: "http://localhost:3000" });
     } else {
-        res.status(401).json({ success: false, message: "Неверный логин или пароль" });
+        res.status(401).json({ success: false, message: "Invalid username or password" });
     }
 });
 
-// Выход (очистка токена)
 app.post("/logout", (req, res) => {
-    res.clearCookie("token").json({ success: true, message: "Вы вышли" });
+    res.clearCookie("token").json({ success: true, message: "You're logout" });
 });
 
 app.get("/", (req, res) => {

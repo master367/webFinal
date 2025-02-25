@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
@@ -15,6 +21,34 @@
       background-color: white;
       border-radius: 10px;
     }
+
+    nav {
+      background-color: #333;
+      padding: 10px;
+      text-align: center;
+      margin-bottom: 20px;
+      border-radius: 10px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 16px;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .logout {
+      float: right;
+      background: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
     h1 {
       text-align: center;
       color: #333;
@@ -59,9 +93,18 @@
       background-color: #ffc107;
     }
   </style>
-
 </head>
 <body>
+
+<nav>
+  <a href="/">Home</a>
+  <a href="/Project1">BMI</a>
+  <a href="/Project2">Email Sender</a>
+  <a href="/Project3">Weather</a>
+  <a href="/Project5">QR Code</a>
+  <button id="logout">Logout</button>
+</nav>
+
 <h1>Blog</h1>
 <form onsubmit="document.getElementById('blog-id').value ? updateBlog(event) : addBlog(event)">
   <input type="hidden" id="blog-id">
@@ -134,6 +177,14 @@
     fetchBlogs();
   }
 
+  document.getElementById("logout").addEventListener("click", () => {
+    fetch("http://localhost:3006/logout", {
+      method: "POST",
+      credentials: "include",
+    }).then(() => {
+      window.location.href = "http://localhost:3006";
+    });
+  });
   window.onload = fetchBlogs;
 </script>
 

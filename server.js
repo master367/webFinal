@@ -8,12 +8,10 @@ const cors = require("cors");
 const app = express();
 const PORT = 3000;
 
-// Настройки CORS
 app.use(cors({ credentials: true, origin: "http://localhost:3006" }));
 app.use(express.static("public"))
 app.use(cookieParser());
 
-// Middleware для проверки токена
 const authMiddleware = (req, res, next) => {
     const token = req.cookies.token;
     if (!token) return res.status(403).json({ message: "Unauthorized" });
@@ -25,7 +23,6 @@ const authMiddleware = (req, res, next) => {
     });
 };
 
-// Проксирование с защитой
 const protectedProxy = (target) =>
     [
         authMiddleware,
@@ -36,14 +33,12 @@ const protectedProxy = (target) =>
         }),
     ];
 
-// Проксируем мини-проекты (доступны только с авторизацией)
 app.use("/Project1", protectedProxy("http://localhost:3001"));
 app.use("/Project2", protectedProxy("http://localhost:3002"));
 app.use("/Project3", protectedProxy("http://localhost:3003"));
 app.use("/Project4", protectedProxy("http://localhost:3004"));
 app.use("/Project5", protectedProxy("http://localhost:3005"));
 
-// Разрешаем доступ только к странице логина/регистрации
 app.use(
     "/auth",
     createProxyMiddleware({ target: "http://localhost:3006", changeOrigin: true })
@@ -53,5 +48,4 @@ app.post("/logout", (req, res) => {
     res.clearCookie("token").json({ message: "Logged out" });
 });
 
-// Запуск сервера
 app.listen(PORT, () => console.log(`API Gateway running on http://localhost:${PORT}`));

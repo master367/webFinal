@@ -5,18 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QR Code Generator</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
+      background-color: #ffffff;
+      color: #fff;
       text-align: center;
       padding: 20px;
     }
     .container {
-      background-color: #fff;
+      background-color: #4c4c4c;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
       display: inline-block;
     }
     img {
@@ -30,18 +35,71 @@
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 5px;
+      background-color: #333;
+      color: white;
     }
     button {
       padding: 10px 20px;
       border: none;
       border-radius: 5px;
-      background-color: #555;
+      background-color: #fff;
+      color: #000;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ddd;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #535353;
+      padding: 15px 20px;
+      color: white;
+      margin-bottom: 20px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      background: #444;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .nav-links a:hover {
+      background: #666;
+    }
+    .navbar button {
+      background-color: #e74c3c;
+      border: none;
+      padding: 10px 15px;
       color: white;
       cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .navbar button:hover {
+      background-color: #c0392b;
     }
   </style>
 </head>
 <body>
+<div class="navbar">
+  <a href="#">Home</a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/Project1">BMI</a>
+    <a href="/Project2">Email Sender</a>
+    <a href="/Project3">Weather</a>
+    <a href="/Project4">Blog</a>
+  </div>
+  <button id="logout">Logout</button>
+</div>
 <div class="container">
   <h1>Enter text for QR Code</h1>
   <input type="text" id="qrInput" placeholder="Enter URL or text">
@@ -54,6 +112,14 @@
     if (input.trim() === '') return;
     document.getElementById('qrContainer').innerHTML = `<img src="/Project5/qr?text=${encodeURIComponent(input)}" alt="QR Code">`;
   }
+  document.getElementById("logout").addEventListener("click", () => {
+    fetch("http://localhost:3006/logout", {
+      method: "POST",
+      credentials: "include",
+    }).then(() => {
+      window.location.href = "http://localhost:3006";
+    });
+  });
 </script>
 </body>
 </html>

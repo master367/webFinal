@@ -5,81 +5,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Email Sender</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
+    * {
       margin: 0;
       padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
     }
-
-    .container {
-      background-color: #ffffff;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 400px;
-    }
-
-    h1 {
+    body {
+      background-color: #f4f4f4;
+      color: #333;
       text-align: center;
-      color: #333333;
-      margin-bottom: 1.5rem;
     }
-
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #2c3e50;
+      padding: 15px 20px;
+      color: white;
+    }
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-size: 20px;
+      margin: 0 10px;
+    }
+    .navbar button {
+      background-color: #e74c3c;
+      border: none;
+      padding: 10px 15px;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .navbar button:hover {
+      background-color: #c0392b;
+    }
+    .container {
+      margin: 50px auto;
+      max-width: 400px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
     label {
       display: block;
-      margin-bottom: 0.5rem;
-      color: #555555;
+      margin-bottom: 5px;
       font-weight: bold;
     }
-
-    input[type="email"],
-    input[type="text"],
-    textarea {
+    input, textarea {
       width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 1rem;
-      border: 1px solid #cccccc;
-      border-radius: 4px;
-      font-size: 1rem;
-      box-sizing: border-box;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
-
-    textarea {
-      resize: vertical;
-      height: 100px;
-    }
-
     button {
-      width: 100%;
-      padding: 0.75rem;
-      background-color: #007bff;
-      color: #ffffff;
+      background-color: #16a085;
       border: none;
-      border-radius: 4px;
-      font-size: 1rem;
+      padding: 10px;
+      color: white;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      border-radius: 5px;
+      font-size: 16px;
     }
-
     button:hover {
-      background-color: #0056b3;
-    }
-
-    .message {
-      margin-top: 1rem;
-      text-align: center;
-      color: #28a745;
-      font-weight: bold;
+      background-color: #13856b;
     }
   </style>
 </head>
 <body>
+<div class="navbar">
+  <a href="/">Home</a>
+  <a href="/Project1">BMI</a>
+  <a href="/Project3">Weather</a>
+  <a href="/Project4">Blog</a>
+  <a href="/Project5">QR Code</a>
+  <button id="logout">Logout</button>
+</div>
+
 <div class="container">
   <h1>Send Email</h1>
   <form id="emailForm" enctype="multipart/form-data">
@@ -131,6 +137,14 @@
       messageDiv.classList.remove('message');
       messageDiv.classList.add('error');
     }
+  });
+  document.getElementById("logout").addEventListener("click", () => {
+    fetch("http://localhost:3006/logout", {
+      method: "POST",
+      credentials: "include",
+    }).then(() => {
+      window.location.href = "http://localhost:3006";
+    });
   });
 </script>
 </body>
