@@ -76,17 +76,17 @@
         <li><a href="/Project3">Weather </a></li>
         <li><a href="/Project4">Blog/CRUD</a></li>
         <li><a href="/Project5">QR Code</a></li>
-        <li><a href="http://localhost:3006">Login</a></li>
+        <li><a href="http://localhost:3000/auth">Login</a></li>
     </ul>
 </div>
 
 <script>
     document.getElementById("logout").addEventListener("click", () => {
-        fetch("http://localhost:3006/logout", {
+        fetch("http://localhost:3000/logout", {
             method: "POST",
             credentials: "include",
         }).then(() => {
-            window.location.href = "http://localhost:3006";
+            window.location.href = "http://localhost:3000";
         });
     });
 </script>

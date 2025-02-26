@@ -113,11 +113,11 @@
     document.getElementById('qrContainer').innerHTML = `<img src="/Project5/qr?text=${encodeURIComponent(input)}" alt="QR Code">`;
   }
   document.getElementById("logout").addEventListener("click", () => {
-    fetch("http://localhost:3006/logout", {
+    fetch("http://localhost:3000/logout", {
       method: "POST",
       credentials: "include",
     }).then(() => {
-      window.location.href = "http://localhost:3006";
+      window.location.href = "http://localhost:3000";
     });
   });
 </script>
